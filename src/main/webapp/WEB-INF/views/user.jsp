@@ -55,7 +55,7 @@
                         </div>
                         <div class="ms-3" style="margin-top: 130px;">
                             <%--TODO: pridat zaznam o povode a skutocnom mene autora--%>
-                            <h5>Andy Horwitz</h5>
+                            <h5>${user.first_name} ${user.last_name}</h5>
                             <p>New York</p>
                         </div>
                     </div>

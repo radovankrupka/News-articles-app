@@ -34,7 +34,7 @@
                 <li class="nav-item">
                     <%--TODO: funcionality of adding / editing articles--%>
                     <%--TODO: user can add/ edit his own articles, admin can do everything--%>
-                    <a class="nav-link btn btn-outline-secondary" href="#">Add article</a>
+                    <a class="nav-link btn btn-outline-secondary" href="/article/new">Add article</a>
                 </li>
             </ul>
         </div>
