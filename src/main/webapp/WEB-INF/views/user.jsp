@@ -1,3 +1,8 @@
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -11,10 +16,8 @@
 
 <!-- Navbar -->
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
-    <!-- Container wrapper -->
     <div class="container-fluid">
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
-            <!-- Navbar brand -->
             <a class="navbar-brand mt-2 mt-lg-0" href="#">
                 <img
                         src="https://mdbcdn.b-cdn.net/img/logo/mdb-transaprent-noshadows.webp"
@@ -23,20 +26,46 @@
                         loading="lazy"
                 />
             </a>
-            <!-- Left links -->
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                 <li class="nav-item">
                     <a class="nav-link" href="/">Home</a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link btn btn-outline-secondary" href="#">Add article</a>
-                </li>
+                <sec:authorize access="isAuthenticated()">
+                    <li class="nav-item px-2">
+                        <a class="nav-link btn btn-outline-primary" href="/article/new">Add article</a>
+                    </li>
+                </sec:authorize>
             </ul>
         </div>
+        <sec:authorize access="isAuthenticated()">
+            <div class="d-flex align-items-center" >
+                <div class="nav-item">
+                    <a
+                            class="d-flex align-items-center"
+                            href="/user"
+                            id="navbarDropdownMenuAvatar"
+                            role="button"
+                            data-mdb-toggle="dropdown"
+                            aria-expanded="false"
+                    >
+                        <span class="me-3" >My profile</span>
+                        <img
+                                src="https://mdbcdn.b-cdn.net/img/new/avatars/2.webp"
+                                class="rounded-circle"
+                                height="45"
+                                alt="Black and White Portrait of a Man"
+                                loading="lazy"
+                        />
+                    </a>
+                </div>
+            </div>
+        </sec:authorize>
+        <sec:authorize access="!isAuthenticated()">
+            <a href="/login" class="btn btn-primary px-4">Login</a>
+        </sec:authorize>
+
     </div>
-    <!-- Container wrapper -->
 </nav>
-<!-- Navbar -->
 <section class="h-100 gradient-custom-2">
     <div class="container py-5 h-100">
         <div class="row d-flex justify-content-center align-items-center h-100">

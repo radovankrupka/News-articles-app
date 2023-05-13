@@ -15,8 +15,7 @@ import java.util.List;
 @Document(collection = "user")
 public class User {
     @MongoId
-    private ObjectId objectId;
-    private int id;
+    private ObjectId _id;
     private String username;
     private String password;
     private List<Role> roles;
