@@ -38,7 +38,7 @@
             </ul>
         </div>
         <sec:authorize access="isAuthenticated()">
-            <div class="d-flex align-items-center" >
+            <div class="d-flex align-items-center">
                 <div class="nav-item">
                     <a
                             class="d-flex align-items-center"
@@ -48,7 +48,7 @@
                             data-mdb-toggle="dropdown"
                             aria-expanded="false"
                     >
-                        <span class="me-3" >My profile</span>
+                        <span class="me-3">My profile</span>
                         <img
                                 src="https://mdbcdn.b-cdn.net/img/new/avatars/2.webp"
                                 class="rounded-circle"
@@ -81,19 +81,31 @@
             <c:forEach items="${articles}" var="article">
                 <div class="col-sm-12 col-md-6 col-xl-4 txt-color">
                     <div class="card mb-3 rounded-3 position-relative" style="height: 450px;">
-                        <div class="d-flex justify-content-center align-items-center img-div">
-                            <%--TODO: pre kazdy article pridat link k relevantnemu obrazku--%>
-                            <img class="img-content" src="https://i.ibb.co/Y7ZNfbJ/placeholder.png" alt="Card image cap">
+                        <div class="d-flex justify-content-center align-items-center img-div" style="position: relative;">
+                                <%--TODO: pre kazdy article pridat link k relevantnemu obrazku--%>
+                            <img class="img-content" src="https://i.ibb.co/Y7ZNfbJ/placeholder.png" alt="Card image cap" >
+                            <a href="/article/${article.articleId}" class="stretched-link"></a>
                         </div>
                         <div class="card-body txt-color p-4 ">
+                            <div style="transform: rotate(0);">
                             <p class="card-date fw-300 mt-2 mb-1">
-                                    <fmt:formatDate value="${article.date}" type="both"/>
+                                <fmt:formatDate value="${article.date}" type="both"/>
                             </p>
                             <h5 class="card-title mb-3">${article.name}</h5>
                             <p class="card-text fw-300">${fn:length(article.text) gt 100 ? fn:substring(article.text, 0, 100).concat('...') :article.text}</p>
                             <footer class="blockquote-footer mt-2">${article.author_first_name} ${article.author_last_name}</footer>
+                            <a href="/article/${article.articleId}" class="stretched-link"></a>
+                            </div>
+                            <sec:authorize access="isAuthenticated()">
+                                <c:if test="${currentUser != null && currentUser.userId == article.author_id}">
+                                    <div>
+                                        <a class="card-link link-warning" style="position: relative;" href="/article/edit/${article.articleId}">Edit</a>
+                                        <a class="card-link link-danger" style="position: relative;" href="/article/delete/${article.articleId}"
+                                           onclick="return confirmDelete();">Delete</a>
+                                    </div>
+                                </c:if>
+                            </sec:authorize>
                         </div>
-                        <a href="/article/${article._id}" class="stretched-link"></a>
                     </div>
                 </div>
             </c:forEach>
@@ -128,6 +140,10 @@
 <%--
 TODO: ?? pridaj grafy so statistikami (kolacovy graf - pocet clankov podla kategorie)
 --%>
-
+<script>
+    function confirmDelete() {
+        return confirm("Are you sure you want to delete this article?");
+    }
+</script>
 </body>
 </html>

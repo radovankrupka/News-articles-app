@@ -5,6 +5,8 @@ import com.dbtech.finalapp.model.Comment;
 import com.dbtech.finalapp.model.User;
 import com.dbtech.finalapp.repository.ArticleRepository;
 import com.dbtech.finalapp.repository.UserRepository;
+import com.dbtech.finalapp.service.ArticleService;
+import com.dbtech.finalapp.service.CategoryService;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -30,15 +32,19 @@ public class ArticleController {
 
     private final ArticleRepository articleRepository;
     private final UserRepository userRepository;
-
+    private final CategoryService categoryService;
+    private final ArticleService articleService;
     @Autowired
-    public ArticleController(ArticleRepository articleRepository, UserRepository userRepository) {
+    public ArticleController(ArticleRepository articleRepository, UserRepository userRepository, CategoryService categoryService,
+                             ArticleService articleService) {
         this.articleRepository = articleRepository;
         this.userRepository = userRepository;
+        this.categoryService = categoryService;
+        this.articleService = articleService;
     }
 
     @GetMapping("/")
-    public String showArticlesPage(Model model, @RequestParam(defaultValue = "0") int page) {
+    public String showArticlesPage(Model model, @RequestParam(defaultValue = "0") int page, Authentication authentication) {
         int pageSize = 3;
         Pageable pageable = PageRequest.of(page, pageSize, Sort.by("date").descending());
         Page<Article> articlePage = articleRepository.findAll(pageable);
@@ -56,22 +62,46 @@ public class ArticleController {
         model.addAttribute("startPage", startPage);
         model.addAttribute("endPage", endPage);
 
+        if (authentication != null && authentication.isAuthenticated()) {
+            model.addAttribute("currentUser", userRepository.findByUsername(authentication.getName()));
+        }
+
         return "articles";
     }
 
+    // show article form, to add new article
     @GetMapping("/article/new")
     public String showArticleForm(Model model) {
         model.addAttribute("article", Article.builder().build());
+        model.addAttribute("categories", categoryService.fetchAllUsedCategories());
         return "article-form";
     }
 
-    @PostMapping("/article/new")
-    public String addArticle(@ModelAttribute("article") Article article) {
-        articleRepository.save(article);
-        return "redirect:/article/" + article.get_id();
+    //update existing or insert new article
+    @PostMapping("/article")
+    public String addArticle(@ModelAttribute("article") Article article, Principal principal) {
+        User user = userRepository.findByUsername(principal.getName());
+        Article articleToSave;
+        if (/*article.articleId != null &&*/ articleRepository.existsById(article.articleId)){ // update article
+            articleService.updateArticleFields(article);
+        } else {    //add new article
+            articleToSave = Article.builder()
+                                       .articleId(new ObjectId())
+                                       .date(new Date())
+                                       .category(article.getCategory())
+                                       .name(article.getName())
+                                       .text(article.getText())
+                                       .author_id(user.getUserId())
+                                       .author_first_name(user.getFirst_name())
+                                       .author_last_name(user.getLast_name())
+                                   .build();
+            articleRepository.save(articleToSave);
+            return "redirect:/article/"+articleToSave.articleId;
+        }
+        return "redirect:/article/"+article.articleId;
     }
 
-    // Metóda pre zobrazenie formulára pre úpravu článku
+    // show article-form to edit, prefilled with data
     @GetMapping("/article/edit/{id}")
     public String showEditArticleForm(@PathVariable("id") String id, Model model) {
         ObjectId objectId;
@@ -80,6 +110,9 @@ public class ArticleController {
         } catch (IllegalArgumentException e) {
             return "redirect:/articles";
         }
+
+        model.addAttribute("categories", categoryService.fetchAllUsedCategories());
+
         Optional<Article> articleOptional = articleRepository.findById(objectId);
         if (articleOptional.isPresent()) {
             Article article = articleOptional.get();
@@ -90,12 +123,7 @@ public class ArticleController {
         }
     }
 
-    // Metóda pre spracovanie úpravy článku
-    @PostMapping("/article/edit")
-    public String editArticle(@ModelAttribute("article") Article article) {
-        articleRepository.save(article);
-        return "redirect:/articles";
-    }
+    //show article detail
     @GetMapping("/article/{id}")
     public String showArticleDetail(@PathVariable("id") String id, Model model, Authentication authentication) {
         Optional<Article> articleOptional = articleRepository.findById(new ObjectId(id));
@@ -112,6 +140,21 @@ public class ArticleController {
         }
     }
 
+    //delete article by ID
+    @GetMapping("/article/delete/{id}")
+    public String deleteArticle(@PathVariable("id") String id) {
+        ObjectId objectId;
+        try {
+            objectId = new ObjectId(id);
+        } catch (IllegalArgumentException e) {
+            return "redirect:/";
+        }
+//TODO: add checks if user is author or ADMIN
+        articleRepository.deleteById(objectId);
+        return "redirect:/";
+    }
+
+    // post new comment for a given article
     @PostMapping("/article/comment")
     public String addComment(@RequestParam("commentText") String commentText,
                              @RequestParam("articleId") String articleId,
@@ -121,13 +164,7 @@ public class ArticleController {
         if (articleOptional.isPresent()) {
             Article article = articleOptional.get();
 
-            article.getComments().add(Comment.builder()
-                                             .comment_text(commentText)
-                                             .author_id(user.get_id())
-                                             .author_first_name(user.getFirst_name())
-                                             .author_last_name(user.getLast_name())
-                                             .date(new Date())
-                                             .build());
+            article = articleService.addComment(article,user, commentText);
 
             articleRepository.save(article);
         } else {

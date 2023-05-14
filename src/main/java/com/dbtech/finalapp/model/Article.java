@@ -3,10 +3,12 @@ package com.dbtech.finalapp.model;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.Field;
 import org.springframework.data.mongodb.core.mapping.MongoId;
 
 import java.util.Date;
@@ -19,9 +21,9 @@ import java.util.List;
 @RequiredArgsConstructor()
 @Document(collection = "article")
 public class Article {
-    @MongoId
-    public ObjectId _id;
-    public String id;
+    @MongoId()
+    @Field("_id")
+    public ObjectId articleId;
     public String name;
     public Date date;
     public String text;

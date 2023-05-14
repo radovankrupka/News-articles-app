@@ -76,16 +76,14 @@
                             <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-profiles/avatar-1.webp"
                                  alt="Generic placeholder image" class="img-fluid img-thumbnail mt-4 mb-2"
                                  style="width: 150px; z-index: 1">
-                            <button type="button" class="btn btn-outline-dark" data-mdb-ripple-color="dark"
-                                    style="z-index: 1;">
+                            <button type="button" onclick="location.href='/user/edit/${currentUser.userId}'" class="btn btn-outline-dark"
+                            data-mdb-ripple-color="dark" style="z-index: 1;">
                                 Edit profile
-                                <%--TODO: editacia profilu s ulozenim--%>
                             </button>
                         </div>
                         <div class="ms-3" style="margin-top: 130px;">
-                            <%--TODO: pridat zaznam o povode a skutocnom mene autora--%>
-                            <h5>${user.first_name} ${user.last_name}</h5>
-                            <p>New York</p>
+                            <h5 >${currentUser.first_name} ${currentUser.last_name}</h5>
+                            <p>${currentUser.city}</p>
                         </div>
                     </div>
                     <div class="p-4 text-black" style="background-color: #f8f9fa;">
@@ -109,42 +107,61 @@
                         <div class="mb-5">
                             <p class="lead fw-normal mb-1">About</p>
                             <div class="p-4" style="background-color: #f8f9fa;">
-                                <%--TODO: pridat "About" do zaznamu o userovi, tu ho zobrazit--%>
-                                <p class="font-italic mb-0">Photographer</p>
+                                <p class="font-italic mb-0">${currentUser.about}</p>
                             </div>
                         </div>
                         <div class="d-flex justify-content-between align-items-center mb-4">
                             <p class="lead fw-normal mb-0">Recent articles</p>
                         </div>
 
-                        <%--TODO: Uprav tak, aby sa tu zobrazili 4 clanky od tohto autora--%>
+
                         <%--TODO: ?? pridaj grafy so statistikami (Stlpcovy graf - pocet clankov tohto usera oproti ostatnym)--%>
 
-                        <div class="row g-2">
-                            <div class="col mb-2">
-                                <img src="https://mdbcdn.b-cdn.net/img/Photos/Lightbox/Original/img%20(112).webp"
-                                     alt="image 1" class="w-100 rounded-3">
-                            </div>
-                            <div class="col mb-2">
-                                <img src="https://mdbcdn.b-cdn.net/img/Photos/Lightbox/Original/img%20(107).webp"
-                                     alt="image 1" class="w-100 rounded-3">
-                            </div>
+                        <div class="row">
+                            <c:forEach var="article" items="${articles}">
+                                <div class="col-sm-6">
+                                    <div class="card mb-3 rounded-3 position-relative" style="height: 350px;">
+                                        <div class="d-flex justify-content-center align-items-center img-div" style="position: relative;">
+                                                <%--TODO: pre kazdy article pridat link k relevantnemu obrazku--%>
+                                            <img class="img-content" src="https://i.ibb.co/Y7ZNfbJ/placeholder.png" alt="Card image cap" >
+                                            <a href="/article/${article.articleId}" class="stretched-link"></a>
+                                        </div>
+                                        <div class="card-body txt-color p-4 ">
+                                            <div style="transform: rotate(0);">
+                                                <p class="card-date fw-300 mt-2 mb-1">
+                                                    <fmt:formatDate value="${article.date}" type="both"/>
+                                                </p>
+                                                <h5 class="card-title mb-3">${article.name}</h5>
+                                                <p class="card-text fw-300">${fn:length(article.text) gt 100 ? fn:substring(article.text, 0, 100).concat('...') :article.text}</p>
+                                                <footer class="blockquote-footer mt-2">${article.author_first_name} ${article.author_last_name}</footer>
+                                                <a href="/article/${article.articleId}" class="stretched-link"></a>
+                                            </div>
+                                            <sec:authorize access="isAuthenticated()">
+                                                <c:if test="${currentUser != null && currentUser.userId == article.author_id}">
+                                                    <div>
+                                                        <a class="card-link link-warning" style="position: relative;" href="/article/edit/${article.articleId}">Edit</a>
+                                                        <a class="card-link link-danger" style="position: relative;" href="/article/delete/${article.articleId}"
+                                                           onclick="return confirmDelete();">Delete</a>
+                                                    </div>
+                                                </c:if>
+                                            </sec:authorize>
+                                        </div>
+                                    </div>
+                                </div>
+                            </c:forEach>
                         </div>
-                        <div class="row g-2">
-                            <div class="col">
-                                <img src="https://mdbcdn.b-cdn.net/img/Photos/Lightbox/Original/img%20(108).webp"
-                                     alt="image 1" class="w-100 rounded-3">
-                            </div>
-                            <div class="col">
-                                <img src="https://mdbcdn.b-cdn.net/img/Photos/Lightbox/Original/img%20(114).webp"
-                                     alt="image 1" class="w-100 rounded-3">
-                            </div>
-                        </div>
+
+
+
                     </div>
                 </div>
+
             </div>
+
         </div>
     </div>
 </section>
+
+
 </body>
 </html>

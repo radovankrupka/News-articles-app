@@ -30,9 +30,9 @@
                     </li>
                 </sec:authorize>
                 <sec:authorize access="isAuthenticated()">
-                    <c:if test="${currentUser != null && currentUser._id == article.author_id}">
+                    <c:if test="${currentUser != null && currentUser.userId == article.author_id}">
                         <li class="nav-item px-2">
-                            <a class="nav-link btn btn-outline-warning" href="/article/edit/${article._id}">Edit article</a>
+                            <a class="nav-link btn btn-outline-warning" href="/article/edit/${article.articleId}">Edit article</a>
                         </li>
                     </c:if>
                 </sec:authorize>
@@ -142,7 +142,7 @@
                             <img class="rounded-circle" src="https://i.imgur.com/RpzrMR2.jpg" width="40">
                             <form method="post" action="/article/comment" class="col">
                                 <textarea class="form-control ml-1 shadow-none textarea" name="commentText"></textarea>
-                                <input type="hidden" name="articleId" value="${article._id}">
+                                <input type="hidden" name="articleId" value="${article.articleId}">
                                 <button class="btn btn-primary btn-sm shadow-none" type="submit">Post comment</button>
                                 <button class="btn btn-outline-primary btn-sm ml-1 shadow-none" type="button">Cancel</button>
                             </form>
