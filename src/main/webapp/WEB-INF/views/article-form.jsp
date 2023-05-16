@@ -2,6 +2,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+<%@ taglib prefix="core" uri="http://java.sun.com/jsp/jstl/core"%>
 
 <html lang="en">
 <head>
@@ -10,19 +11,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Article management</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
-    <link rel="stylesheet" href="http://getbootstrap.com/examples/dashboard/dashboard.css">
-    <!--[if lt IE 9]>
-    <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
-    <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
-    <![endif]-->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
-    <script src="http://cdn.ckeditor.com/4.4.7/full/ckeditor.js"></script>
-    <script type="text/javascript" charset="utf-8">
-        $(document).ready(function(){
-            $('#nav').load('elements/nav.html');
-        });
-    </script>
+
 </head>
 <body>
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
@@ -44,24 +33,33 @@
         </div>
         <sec:authorize access="isAuthenticated()">
             <div class="d-flex align-items-center" >
-                <div class="nav-item">
-                    <a
-                            class="d-flex align-items-center"
-                            href="/user"
-                            id="navbarDropdownMenuAvatar"
-                            role="button"
-                            data-mdb-toggle="dropdown"
-                            aria-expanded="false"
-                    >
-                        <span class="me-3" >My profile</span>
-                        <img
-                                src="https://mdbcdn.b-cdn.net/img/new/avatars/2.webp"
-                                class="rounded-circle"
-                                height="45"
-                                alt="Black and White Portrait of a Man"
-                                loading="lazy"
-                        />
-                    </a>
+                <div class="nav-item ">
+                    <div class="dropstart">
+                        <div id="dropstartMenuButton dropdown-toggle" aria-expanded="false" data-bs-toggle="dropdown">
+                            <img
+                                    src="<core:url value="/res/png/6086462.png"/>"
+                                    class="rounded-circle "
+                                    height="25"
+                                    loading="lazy"
+                            />
+                            <img
+                                    src="https://mdbcdn.b-cdn.net/img/new/avatars/2.webp"
+                                    class="rounded-circle"
+                                    height="45"
+                                    alt="Black and White Portrait of a Man"
+                                    loading="lazy"
+
+                            />
+                        </div>
+
+                        <ul class="dropdown-menu" aria-labelledby="dropstartMenuButton" >
+                            <li><h6 class="dropdown-header">User actions</h6></li>
+
+                            <li><a class="dropdown-item" href="/user">My profile</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="/logout">Logout</a></li>
+                        </ul>
+                    </div>
                 </div>
             </div>
         </sec:authorize>
@@ -83,8 +81,8 @@
                     '645e96a2e5eb568e2c40fb67'}">
 
                 <div class="form-group">
-                    <label for="name">Name</label>
-                    <input type="text" class="form-control" id="name" name="name" placeholder="Name" value="${article.name}">
+                    <label for="name">Title</label>
+                    <input type="text" class="form-control" id="name" name="name" placeholder="Title" value="${article.name}">
                 </div>
                 <div class="form-group">
                     <label for="text">Text</label>
@@ -114,7 +112,7 @@
     </div>
 </div>
 
-
+<script src="<core:url value="/res/js/bootstrap.bundle.min.js" />"></script>
 
 </body>
 </html>

@@ -3,16 +3,18 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib prefix="core" uri="http://java.sun.com/jsp/jstl/core"%>
 
 <!doctype html>
 <html lang="en">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.0.2/css/bootstrap.min.css" integrity="sha512-usVBAd66/NpVNfBge19gws2j6JZinnca12rAe2l+d+QkLU9fiG02O1X8Q6hepIpr/EYKZvKx/I9WsnujJuOmBA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 
     <title>CRUD App</title>
 </head>
+
 <body>
 <!-- Navbar -->
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
@@ -39,25 +41,36 @@
         </div>
         <sec:authorize access="isAuthenticated()">
             <div class="d-flex align-items-center">
-                <div class="nav-item">
-                    <a
-                            class="d-flex align-items-center"
-                            href="/user"
-                            id="navbarDropdownMenuAvatar"
-                            role="button"
-                            data-mdb-toggle="dropdown"
-                            aria-expanded="false"
-                    >
-                        <span class="me-3">My profile</span>
-                        <img
-                                src="https://mdbcdn.b-cdn.net/img/new/avatars/2.webp"
-                                class="rounded-circle"
-                                height="45"
-                                alt="Black and White Portrait of a Man"
-                                loading="lazy"
-                        />
-                    </a>
+
+                <div class="nav-item ">
+                    <div class="dropstart">
+                        <div id="dropstartMenuButton dropdown-toggle" aria-expanded="false" data-bs-toggle="dropdown">
+                            <img
+                                    src="<core:url value="/res/png/6086462.png"/>"
+                                    class="rounded-circle "
+                                    height="25"
+                                    loading="lazy"
+                            />
+                            <img
+                                    src="https://mdbcdn.b-cdn.net/img/new/avatars/2.webp"
+                                    class="rounded-circle"
+                                    height="45"
+                                    alt="Black and White Portrait of a Man"
+                                    loading="lazy"
+
+                            />
+                        </div>
+
+                        <ul class="dropdown-menu" aria-labelledby="dropstartMenuButton" >
+                            <li><h6 class="dropdown-header">User actions</h6></li>
+
+                            <li><a class="dropdown-item" href="/user">My profile</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="/logout">Logout</a></li>
+                        </ul>
+                    </div>
                 </div>
+
             </div>
         </sec:authorize>
         <sec:authorize access="!isAuthenticated()">
@@ -140,10 +153,13 @@
 <%--
 TODO: ?? pridaj grafy so statistikami (kolacovy graf - pocet clankov podla kategorie)
 --%>
+
+<script src="<core:url value="/res/js/bootstrap.bundle.min.js" />"></script>
 <script>
     function confirmDelete() {
         return confirm("Are you sure you want to delete this article?");
     }
 </script>
+
 </body>
 </html>

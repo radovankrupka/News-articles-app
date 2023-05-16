@@ -1,6 +1,7 @@
 package com.dbtech.finalapp.service;
 
 import com.dbtech.finalapp.model.Article;
+import com.dbtech.finalapp.model.Category;
 import com.dbtech.finalapp.model.Comment;
 import com.dbtech.finalapp.model.User;
 import com.dbtech.finalapp.repository.ArticleRepository;
@@ -9,8 +10,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class ArticleService {
@@ -49,4 +52,11 @@ public class ArticleService {
         return articleRepository.findByAuthorId(userId);
     }
 
+    public List<Article> fetchFourRelatedArticles(List<String> categories) {
+        return articleRepository.findByCategoryIn(categories)
+                                    .stream()
+                                    .sorted(Comparator.comparing(Article::getDate).reversed())
+                                    .limit(4)
+                                    .collect(Collectors.toList());
+    }
 }

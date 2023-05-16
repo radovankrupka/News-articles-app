@@ -16,5 +16,6 @@ public interface ArticleRepository extends MongoRepository<Article, ObjectId> {
     @Query("{'author_id': ?0}")
     List<Article> findByAuthorId(ObjectId authorId);
 
+    List<Article> findByCategoryIn(List<String> categories);
 }
 

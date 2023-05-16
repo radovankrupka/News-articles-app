@@ -2,6 +2,7 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+<%@ taglib prefix="core" uri="http://java.sun.com/jsp/jstl/core"%>
 
 <!DOCTYPE html>
 <html>
@@ -39,24 +40,33 @@
         </div>
         <sec:authorize access="isAuthenticated()">
             <div class="d-flex align-items-center" >
-                <div class="nav-item">
-                    <a
-                            class="d-flex align-items-center"
-                            href="/user"
-                            id="navbarDropdownMenuAvatar"
-                            role="button"
-                            data-mdb-toggle="dropdown"
-                            aria-expanded="false"
-                    >
-                        <span class="me-3" >My profile</span>
-                        <img
-                                src="https://mdbcdn.b-cdn.net/img/new/avatars/2.webp"
-                                class="rounded-circle"
-                                height="45"
-                                alt="Black and White Portrait of a Man"
-                                loading="lazy"
-                        />
-                    </a>
+                <div class="nav-item ">
+                    <div class="dropstart">
+                        <div id="dropstartMenuButton dropdown-toggle" aria-expanded="false" data-bs-toggle="dropdown">
+                            <img
+                                    src="<core:url value="/res/png/6086462.png"/>"
+                                    class="rounded-circle "
+                                    height="25"
+                                    loading="lazy"
+                            />
+                            <img
+                                    src="https://mdbcdn.b-cdn.net/img/new/avatars/2.webp"
+                                    class="rounded-circle"
+                                    height="45"
+                                    alt="Black and White Portrait of a Man"
+                                    loading="lazy"
+
+                            />
+                        </div>
+
+                        <ul class="dropdown-menu" aria-labelledby="dropstartMenuButton" >
+                            <li><h6 class="dropdown-header">User actions</h6></li>
+
+                            <li><a class="dropdown-item" href="/user">My profile</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="/logout">Logout</a></li>
+                        </ul>
+                    </div>
                 </div>
             </div>
         </sec:authorize>
@@ -162,6 +172,6 @@
     </div>
 </section>
 
-
+<script src="<core:url value="/res/js/bootstrap.bundle.min.js" />"></script>
 </body>
 </html>

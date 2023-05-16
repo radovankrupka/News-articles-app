@@ -52,7 +52,7 @@ public class ArticleController {
         int totalPages = articlePage.getTotalPages();
         int currentPage = page + 1; // upravene
 
-        // Vypočítajte novú hodnotu pre startPage a endPage
+        // Vypočíta novú hodnotu pre startPage a endPage
         int startPage = Math.max(1, currentPage - currentPage % 3);
         int endPage = Math.min(startPage + 2, totalPages);
 
@@ -127,13 +127,16 @@ public class ArticleController {
     @GetMapping("/article/{id}")
     public String showArticleDetail(@PathVariable("id") String id, Model model, Authentication authentication) {
         Optional<Article> articleOptional = articleRepository.findById(new ObjectId(id));
-        //TODO: add list of related articles based on common categories
         if (authentication != null && authentication.isAuthenticated()) {
             model.addAttribute("currentUser", userRepository.findByUsername(authentication.getName()));
         }
         if (articleOptional.isPresent()) {
             Article article = articleOptional.get();
             model.addAttribute("article", article);
+
+            //get 4 related articles by categories
+            model.addAttribute("relatedArticles",articleService.fetchFourRelatedArticles(article.getCategory()));
+
             return "article-detail";
         } else {
             return "redirect:/error";

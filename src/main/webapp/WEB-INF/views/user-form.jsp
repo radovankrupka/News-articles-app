@@ -2,6 +2,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+<%@ taglib prefix="core" uri="http://java.sun.com/jsp/jstl/core"%>
 
 <html lang="en">
 <head>
@@ -13,7 +14,64 @@
 </head>
 <body>
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
-    <!-- Navbar content -->
+    <div class="container-fluid">
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <a class="navbar-brand mt-2 mt-lg-0" href="#">
+                <img
+                        src="https://mdbcdn.b-cdn.net/img/logo/mdb-transaprent-noshadows.webp"
+                        height="15"
+                        alt="MDB Logo"
+                        loading="lazy"
+                />
+            </a>
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item">
+                    <a class="nav-link" href="/">Home</a>
+                </li>
+                <sec:authorize access="isAuthenticated()">
+                    <li class="nav-item px-2">
+                        <a class="nav-link btn btn-outline-primary" href="/article/new">Add article</a>
+                    </li>
+                </sec:authorize>
+            </ul>
+        </div>
+        <sec:authorize access="isAuthenticated()">
+            <div class="d-flex align-items-center" >
+                <div class="nav-item ">
+                    <div class="dropstart">
+                        <div id="dropstartMenuButton dropdown-toggle" aria-expanded="false" data-bs-toggle="dropdown">
+                            <img
+                                    src="<core:url value="/res/png/6086462.png"/>"
+                                    class="rounded-circle "
+                                    height="25"
+                                    loading="lazy"
+                            />
+                            <img
+                                    src="https://mdbcdn.b-cdn.net/img/new/avatars/2.webp"
+                                    class="rounded-circle"
+                                    height="45"
+                                    alt="Black and White Portrait of a Man"
+                                    loading="lazy"
+
+                            />
+                        </div>
+
+                        <ul class="dropdown-menu" aria-labelledby="dropstartMenuButton" >
+                            <li><h6 class="dropdown-header">User actions</h6></li>
+
+                            <li><a class="dropdown-item" href="/user">My profile</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="/logout">Logout</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </sec:authorize>
+        <sec:authorize access="!isAuthenticated()">
+            <a href="/login" class="btn btn-primary px-4">Login</a>
+        </sec:authorize>
+
+    </div>
 </nav>
 
 <div class="container-fluid">
@@ -52,6 +110,8 @@
         </div>
     </div>
 </div>
+
+<script src="<core:url value="/res/js/bootstrap.bundle.min.js" />"></script>
 
 </body>
 </html>

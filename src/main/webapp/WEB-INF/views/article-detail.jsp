@@ -2,6 +2,10 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+<%@ taglib prefix="core" uri="http://java.sun.com/jsp/jstl/core"%>
+
+
 <html>
 <head>
     <title>${article.name}</title>
@@ -40,24 +44,33 @@
         </div>
         <sec:authorize access="isAuthenticated()">
             <div class="d-flex align-items-center" >
-                <div class="nav-item">
-                    <a
-                            class="d-flex align-items-center"
-                            href="/user"
-                            id="navbarDropdownMenuAvatar"
-                            role="button"
-                            data-mdb-toggle="dropdown"
-                            aria-expanded="false"
-                    >
-                        <span class="me-3" >My profile</span>
-                        <img
-                                src="https://mdbcdn.b-cdn.net/img/new/avatars/2.webp"
-                                class="rounded-circle"
-                                height="45"
-                                alt="Black and White Portrait of a Man"
-                                loading="lazy"
-                        />
-                    </a>
+                <div class="nav-item ">
+                    <div class="dropstart">
+                        <div id="dropstartMenuButton dropdown-toggle" aria-expanded="false" data-bs-toggle="dropdown">
+                            <img
+                                    src="<core:url value="/res/png/6086462.png"/>"
+                                    class="rounded-circle "
+                                    height="25"
+                                    loading="lazy"
+                            />
+                            <img
+                                    src="https://mdbcdn.b-cdn.net/img/new/avatars/2.webp"
+                                    class="rounded-circle"
+                                    height="45"
+                                    alt="Black and White Portrait of a Man"
+                                    loading="lazy"
+
+                            />
+                        </div>
+
+                        <ul class="dropdown-menu" aria-labelledby="dropstartMenuButton" >
+                            <li><h6 class="dropdown-header">User actions</h6></li>
+
+                            <li><a class="dropdown-item" href="/user">My profile</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="/logout">Logout</a></li>
+                        </ul>
+                    </div>
                 </div>
             </div>
         </sec:authorize>
@@ -84,34 +97,54 @@
                 <li>Author: ${article.author_first_name} ${article.author_last_name}</li>
                 <li>Date: ${article.date}</li>
             </ul>
+            <h5 class="my-3">Category</h5>
+            <ul>
+                <c:forEach var="category" items="${article.category}">
+                    <li>${category}</li>
+                </c:forEach>
+            </ul>
         </div>
-
     </div>
-    //TODO: related articles podla kategorie - 4 ks
+
     <h3 class="my-4">Related articles for this category:</h3>
 
+
     <div class="row">
-        <div class="col-md-3 col-sm-6 mb-4">
-            <a href="#">
-                <img class="img-fluid" src="https://via.placeholder.com/500x300" alt="">
-            </a>
-        </div>
-        <div class="col-md-3 col-sm-6 mb-4">
-            <a href="#">
-                <img class="img-fluid" src="https://via.placeholder.com/500x300" alt="">
-            </a>
-        </div>
-        <div class="col-md-3 col-sm-6 mb-4">
-            <a href="#">
-                <img class="img-fluid" src="https://via.placeholder.com/500x300" alt="">
-            </a>
-        </div>
-        <div class="col-md-3 col-sm-6 mb-4">
-            <a href="#">
-                <img class="img-fluid" src="https://via.placeholder.com/500x300" alt="">
-            </a>
-        </div>
+        <c:forEach var="article" items="${relatedArticles}">
+            <div class="col-sm-3">
+                <div class="card mb-3 rounded-3 position-relative" style="height: 350px;">
+                    <div class="d-flex justify-content-center align-items-center img-div" style="position: relative;">
+                            <%--TODO: pre kazdy article pridat link k relevantnemu obrazku--%>
+                        <img class="img-content" src="https://i.ibb.co/Y7ZNfbJ/placeholder.png" alt="Card image cap">
+                        <a href="/article/${article.articleId}" class="stretched-link"></a>
+                    </div>
+                    <div class="card-body txt-color p-4">
+                        <div style="transform: rotate(0);">
+                            <p class="card-date fw-300 mt-2 mb-1">
+                                <fmt:formatDate value="${article.date}" type="both"/>
+                            </p>
+                            <h5 class="card-title mb-3 small">${article.name}</h5>
+                            <p class="card-text fw-300 small">${fn:length(article.text) gt 75 ? fn:substring(article.text, 0, 75).concat('...') :
+                            article.text}</p>
+                            <footer class="blockquote-footer mt-2">${article.author_first_name} ${article.author_last_name}</footer>
+                            <a href="/article/${article.articleId}" class="stretched-link"></a>
+                        </div>
+                        <sec:authorize access="isAuthenticated()">
+                            <c:if test="${currentUser != null && currentUser.userId == article.author_id}">
+                                <div>
+                                    <a class="card-link link-warning" style="position: relative;" href="/article/edit/${article.articleId}">Edit</a>
+                                    <a class="card-link link-danger" style="position: relative;" href="/article/delete/${article.articleId}" onclick="return confirmDelete();">Delete</a>
+                                </div>
+                            </c:if>
+                        </sec:authorize>
+                    </div>
+                </div>
+            </div>
+        </c:forEach>
     </div>
+
+
+
 </div>
 
 <div class="container mt-5">
@@ -162,6 +195,6 @@
         </div>
     </div>
 </div>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
+<script src="<core:url value="/res/js/bootstrap.bundle.min.js" />"></script>
 </body>
 </html>
