@@ -27,16 +27,17 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http.csrf().disable()
             .authorizeRequests()
-                .anyRequest()
-                .fullyAuthenticated()
-            /*            .antMatchers("/admin/**").hasRole("ADMIN")
-            .antMatchers("/user/**").hasAnyRole("ADMIN", "USER")*/
+            .antMatchers("/res","/res/**","/", "/register").permitAll()
 
-            //.anyRequest().authenticated()
-            .and().formLogin()
+            .anyRequest().authenticated()
+                .and()
+            .formLogin()
+                .loginPage("/login")
+                .permitAll()
             .and().logout()
-            .logoutUrl("/logout")
-            .logoutSuccessUrl("/login")
+                .permitAll()
+                .logoutUrl("/logout")
+                .logoutSuccessUrl("/")
             .invalidateHttpSession(true)
             .deleteCookies("JSESSIONID");
     }
