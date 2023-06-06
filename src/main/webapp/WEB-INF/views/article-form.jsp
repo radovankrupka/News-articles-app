@@ -17,11 +17,11 @@
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
     <div class="container-fluid">
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
-            <a class="navbar-brand mt-2 mt-lg-0" href="#">
+            <a class="navbar-brand mt-2 mt-lg-0" href="/">
                 <img
-                        src="https://mdbcdn.b-cdn.net/img/logo/mdb-transaprent-noshadows.webp"
+                        src="/res/img/icon.png"
                         height="15"
-                        alt="MDB Logo"
+                        alt="RK Logo"
                         loading="lazy"
                 />
             </a>
@@ -37,7 +37,7 @@
                     <div class="dropstart">
                         <div id="dropstartMenuButton dropdown-toggle" aria-expanded="false" data-bs-toggle="dropdown">
                             <img
-                                    src="<core:url value="/res/png/6086462.png"/>"
+                                    src="<core:url value="/res/img/6086462.png"/>"
                                     class="rounded-circle "
                                     height="25"
                                     loading="lazy"
@@ -87,6 +87,10 @@
                 <div class="form-group">
                     <label for="text">Text</label>
                     <textarea class="form-control" id="text" name="text" rows="5" placeholder="Text">${article.text}</textarea>
+                </div>
+                <div class="form-group">
+                    <label for="text">Image link</label>
+                    <input type="text" class="form-control" id="img_link" name="img_link" placeholder="Image link" value="${article.img_link}">
                 </div>
                 <div class="form-group">
                     <label for="category">Category</label>

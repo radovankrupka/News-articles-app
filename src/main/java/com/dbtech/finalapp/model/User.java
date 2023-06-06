@@ -30,6 +30,7 @@ public class User {
     private String last_name;
     private String about;
     private String city;
+    private String img_link;
 }
 
 

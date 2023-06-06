@@ -27,6 +27,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
+import javax.servlet.http.HttpServletRequest;
+
 @Controller
 public class ArticleController {
 
@@ -72,7 +74,7 @@ public class ArticleController {
     // show article form, to add new article
     @GetMapping("/article/new")
     public String showArticleForm(Model model) {
-        model.addAttribute("article", Article.builder().build());
+        model.addAttribute("article", Article.builder().articleId(new ObjectId()).build());
         model.addAttribute("categories", categoryService.fetchAllUsedCategories());
         return "article-form";
     }
@@ -82,7 +84,7 @@ public class ArticleController {
     public String addArticle(@ModelAttribute("article") Article article, Principal principal) {
         User user = userRepository.findByUsername(principal.getName());
         Article articleToSave;
-        if (/*article.articleId != null &&*/ articleRepository.existsById(article.articleId)){ // update article
+        if ( articleRepository.existsById(article.articleId)){ // update article
             articleService.updateArticleFields(article);
         } else {    //add new article
             articleToSave = Article.builder()
@@ -94,6 +96,7 @@ public class ArticleController {
                                        .author_id(user.getUserId())
                                        .author_first_name(user.getFirst_name())
                                        .author_last_name(user.getLast_name())
+                                       .img_link(article.getImg_link())
                                    .build();
             articleRepository.save(articleToSave);
             return "redirect:/article/"+articleToSave.articleId;
@@ -135,7 +138,7 @@ public class ArticleController {
             model.addAttribute("article", article);
 
             //get 4 related articles by categories
-            model.addAttribute("relatedArticles",articleService.fetchFourRelatedArticles(article.getCategory()));
+            model.addAttribute("relatedArticles",articleService.fetchFourRelatedArticles(article.getCategory(), article));
 
             return "article-detail";
         } else {
@@ -144,17 +147,18 @@ public class ArticleController {
     }
 
     //delete article by ID
-    @GetMapping("/article/delete/{id}")
-    public String deleteArticle(@PathVariable("id") String id) {
-        ObjectId objectId;
-        try {
-            objectId = new ObjectId(id);
-        } catch (IllegalArgumentException e) {
-            return "redirect:/";
+    @GetMapping("/article/delete/{articleId}")
+    public String deleteArticle(@PathVariable String articleId, HttpServletRequest request) {
+        if (articleService.existsById(articleId)){
+            articleService.deleteById(articleId);
+            String referer = request.getHeader("Referer");
+            if (referer != null) {
+                return "redirect:" + referer;
+            } else {
+                return "redirect:/";
+            }
         }
-//TODO: add checks if user is author or ADMIN
-        articleRepository.deleteById(objectId);
-        return "redirect:/";
+        return "/error";
     }
 
     // post new comment for a given article
@@ -175,5 +179,4 @@ public class ArticleController {
         }
         return "redirect:/article/" + articleId;
     }
-
 }

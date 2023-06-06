@@ -16,11 +16,11 @@
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
     <div class="container-fluid">
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
-            <a class="navbar-brand mt-2 mt-lg-0" href="#">
+            <a class="navbar-brand mt-2 mt-lg-0" href="/">
                 <img
-                        src="https://mdbcdn.b-cdn.net/img/logo/mdb-transaprent-noshadows.webp"
+                        src="/res/img/icon.png"
                         height="15"
-                        alt="MDB Logo"
+                        alt="RK Logo"
                         loading="lazy"
                 />
             </a>
@@ -33,12 +33,26 @@
                         <a class="nav-link btn btn-outline-primary" href="/article/new">Add article</a>
                     </li>
                 </sec:authorize>
+
                 <sec:authorize access="isAuthenticated()">
                     <c:if test="${currentUser != null && currentUser.userId == article.author_id}">
                         <li class="nav-item px-2">
                             <a class="nav-link btn btn-outline-warning" href="/article/edit/${article.articleId}">Edit article</a>
                         </li>
                     </c:if>
+                </sec:authorize>
+
+                <sec:authorize access="hasRole('ADMIN')">
+                    <div class="btn-group">
+                        <a href="/admin" class="btn btn-outline-danger">Admin panel</a>
+                        <div class="btn-group">
+                            <button type="button" class="btn btn-outline-danger dropdown-toggle" data-bs-toggle="dropdown"></button>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" href="/admin?page=1&display=articles">Articles</a></li>
+                                <li><a class="dropdown-item" href="/admin?page=1&display=users">Users</a></li>
+                            </ul>
+                        </div>
+                    </div>
                 </sec:authorize>
             </ul>
         </div>
@@ -48,13 +62,13 @@
                     <div class="dropstart">
                         <div id="dropstartMenuButton dropdown-toggle" aria-expanded="false" data-bs-toggle="dropdown">
                             <img
-                                    src="<core:url value="/res/png/6086462.png"/>"
+                                    src="<core:url value="/res/img/6086462.png"/>"
                                     class="rounded-circle "
                                     height="25"
                                     loading="lazy"
                             />
                             <img
-                                    src="https://mdbcdn.b-cdn.net/img/new/avatars/2.webp"
+                                    src="${currentUser.img_link}"
                                     class="rounded-circle"
                                     height="45"
                                     alt="Black and White Portrait of a Man"
@@ -66,7 +80,7 @@
                         <ul class="dropdown-menu" aria-labelledby="dropstartMenuButton" >
                             <li><h6 class="dropdown-header">User actions</h6></li>
 
-                            <li><a class="dropdown-item" href="/user">My profile</a></li>
+                            <li><a class="dropdown-item" href="/user/${currentUser.userId}">My profile</a></li>
                             <li><hr class="dropdown-divider"></li>
                             <li><a class="dropdown-item" href="/logout">Logout</a></li>
                         </ul>
@@ -86,7 +100,9 @@
     <div class="row">
 
         <div class="col-md-8">
-            <img class="img-fluid" src="https://via.placeholder.com/750x500" alt="">
+            <img class="img-content img-fluid"
+                 src="${article.img_link}" alt="Card image cap"
+                 style="max-width: 750px; max-height: 500px;">
         </div>
 
         <div class="col-md-4">
@@ -112,10 +128,10 @@
     <div class="row">
         <c:forEach var="article" items="${relatedArticles}">
             <div class="col-sm-3">
-                <div class="card mb-3 rounded-3 position-relative" style="height: 350px;">
-                    <div class="d-flex justify-content-center align-items-center img-div" style="position: relative;">
-                            <%--TODO: pre kazdy article pridat link k relevantnemu obrazku--%>
-                        <img class="img-content" src="https://i.ibb.co/Y7ZNfbJ/placeholder.png" alt="Card image cap">
+                <div class="card mb-3 rounded-3 position-relative" style="height: 400px;">
+                    <div class="d-flex justify-content-center align-items-center img-div mt-3" style="position: relative;">
+                        <img class="img-content img-fluid" src="${article.img_link}" alt="Card image cap"
+                             style="max-width: 180px; max-height: 150px;">
                         <a href="/article/${article.articleId}" class="stretched-link"></a>
                     </div>
                     <div class="card-body txt-color p-4">
@@ -155,7 +171,7 @@
                 <c:forEach var="comment" items="${article.comments}">
                     <div class="bg-white p-2">
                         <div class="d-flex flex-row user-info">
-                            <img class="rounded-circle" src="https://i.imgur.com/RpzrMR2.jpg" width="40">
+                            <img class="rounded-circle mr-2" src="https://i.imgur.com/RpzrMR2.jpg" width="40">
                             <div class="d-flex flex-column justify-content-start ml-2">
                                 <span class="d-block font-weight-bold name">${comment.author_first_name} ${comment.author_last_name}</span>
                                 <span class="date text-black-50">
@@ -172,7 +188,7 @@
                 <sec:authorize access="isAuthenticated()">
                     <div class="bg-light p-2">
                         <div class="d-flex flex-row align-items-start">
-                            <img class="rounded-circle" src="https://i.imgur.com/RpzrMR2.jpg" width="40">
+                            <img class="rounded-circle" src="${currentUser.img_link}" width="40">
                             <form method="post" action="/article/comment" class="col">
                                 <textarea class="form-control ml-1 shadow-none textarea" name="commentText"></textarea>
                                 <input type="hidden" name="articleId" value="${article.articleId}">

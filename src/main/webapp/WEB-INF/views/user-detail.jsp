@@ -19,11 +19,11 @@
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
     <div class="container-fluid">
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
-            <a class="navbar-brand mt-2 mt-lg-0" href="#">
+            <a class="navbar-brand mt-2 mt-lg-0" href="/">
                 <img
-                        src="https://mdbcdn.b-cdn.net/img/logo/mdb-transaprent-noshadows.webp"
+                        src="/res/img/icon.png"
                         height="15"
-                        alt="MDB Logo"
+                        alt="RK Logo"
                         loading="lazy"
                 />
             </a>
@@ -36,6 +36,19 @@
                         <a class="nav-link btn btn-outline-primary" href="/article/new">Add article</a>
                     </li>
                 </sec:authorize>
+
+                <sec:authorize access="hasRole('ADMIN')">
+                    <div class="btn-group">
+                        <a href="/admin" class="btn btn-outline-danger">Admin panel</a>
+                        <div class="btn-group">
+                            <button type="button" class="btn btn-outline-danger dropdown-toggle" data-bs-toggle="dropdown"></button>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" href="/admin?page=1&display=articles">Articles</a></li>
+                                <li><a class="dropdown-item" href="/admin?page=1&display=users">Users</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </sec:authorize>
             </ul>
         </div>
         <sec:authorize access="isAuthenticated()">
@@ -44,13 +57,13 @@
                     <div class="dropstart">
                         <div id="dropstartMenuButton dropdown-toggle" aria-expanded="false" data-bs-toggle="dropdown">
                             <img
-                                    src="<core:url value="/res/png/6086462.png"/>"
+                                    src="<core:url value="/res/img/6086462.png"/>"
                                     class="rounded-circle "
                                     height="25"
                                     loading="lazy"
                             />
                             <img
-                                    src="https://mdbcdn.b-cdn.net/img/new/avatars/2.webp"
+                                    src="${currentUser.img_link}"
                                     class="rounded-circle"
                                     height="45"
                                     alt="Black and White Portrait of a Man"
@@ -83,7 +96,7 @@
                 <div class="card">
                     <div class="rounded-top text-white d-flex flex-row" style="background-color: #000; height:200px;">
                         <div class="ms-4 mt-5 d-flex flex-column" style="width: 150px;">
-                            <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-profiles/avatar-1.webp"
+                            <img src="${currentUser.img_link}"
                                  alt="Generic placeholder image" class="img-fluid img-thumbnail mt-4 mb-2"
                                  style="width: 150px; z-index: 1">
                             <button type="button" onclick="location.href='/user/edit/${currentUser.userId}'" class="btn btn-outline-dark"
@@ -99,7 +112,6 @@
                     <div class="p-4 text-black" style="background-color: #f8f9fa;">
                         <div class="d-flex justify-content-end text-center py-1">
                             <div>
-                                <%--TODO: zobraz realne pocty ?--%>
                                 <p class="mb-1 h5">25</p>
                                 <p class="small text-muted mb-0">Articles</p>
                             </div>
@@ -124,16 +136,13 @@
                             <p class="lead fw-normal mb-0">Recent articles</p>
                         </div>
 
-
-                        <%--TODO: ?? pridaj grafy so statistikami (Stlpcovy graf - pocet clankov tohto usera oproti ostatnym)--%>
-
                         <div class="row">
                             <c:forEach var="article" items="${articles}">
                                 <div class="col-sm-6">
-                                    <div class="card mb-3 rounded-3 position-relative" style="height: 350px;">
-                                        <div class="d-flex justify-content-center align-items-center img-div" style="position: relative;">
-                                                <%--TODO: pre kazdy article pridat link k relevantnemu obrazku--%>
-                                            <img class="img-content" src="https://i.ibb.co/Y7ZNfbJ/placeholder.png" alt="Card image cap" >
+                                    <div class="card mb-3 rounded-3 position-relative" style="height: 420px;">
+                                        <div class="d-flex justify-content-center align-items-center img-div mt-3" style="position: relative;">
+                                            <img class="img-content img-fluid" src="${article.img_link}" alt="Card image cap"
+                                                         style="max-width: 180px; max-height: 150px;">
                                             <a href="/article/${article.articleId}" class="stretched-link"></a>
                                         </div>
                                         <div class="card-body txt-color p-4 ">
@@ -141,8 +150,9 @@
                                                 <p class="card-date fw-300 mt-2 mb-1">
                                                     <fmt:formatDate value="${article.date}" type="both"/>
                                                 </p>
-                                                <h5 class="card-title mb-3">${article.name}</h5>
-                                                <p class="card-text fw-300">${fn:length(article.text) gt 100 ? fn:substring(article.text, 0, 100).concat('...') :article.text}</p>
+                                                <h6 class="card-title mb-3 ">${article.name}</h6>
+                                                <p class="card-text fw-light">${fn:length(article.text) gt 100 ?
+                                                fn:substring(article.text, 0, 100).concat('...') :article.text}</p>
                                                 <footer class="blockquote-footer mt-2">${article.author_first_name} ${article.author_last_name}</footer>
                                                 <a href="/article/${article.articleId}" class="stretched-link"></a>
                                             </div>
@@ -160,8 +170,6 @@
                                 </div>
                             </c:forEach>
                         </div>
-
-
 
                     </div>
                 </div>

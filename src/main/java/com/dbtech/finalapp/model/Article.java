@@ -30,10 +30,11 @@ public class Article {
     public ObjectId author_id;
     public String author_first_name;
     public String author_last_name;
+    public String img_link;
     public List<String> category;
     public List<Comment> comments;
 
-    public Article(String name, String text, String categoriesText) {
+    public Article(String name, String text) {
         this.name = name;
         this.text = text;
         this.category = null;

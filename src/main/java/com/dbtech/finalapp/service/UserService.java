@@ -14,6 +14,8 @@ import org.springframework.stereotype.Service;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -37,7 +39,7 @@ public class UserService {
     }
 
     public void saveProfileUpdates(String userId, User user) {
-        User userToUpdate = userRepository.findById(userId).get();
+        User userToUpdate = findById(user.getUserId().toString()).get();
         userToUpdate.setAbout(user.getAbout());
         userToUpdate.setCity(user.getCity());
         userToUpdate.setFirst_name(user.getFirst_name());
@@ -53,8 +55,17 @@ public class UserService {
                             .roles(Collections.singletonList(USER))
                             .city("Upper Lower city")
                             .about("I have not yet added my info! Time for a change?")
+                            .img_link("https://mdbcdn.b-cdn.net/img/new/avatars/2.webp")
                             .password(passwordEncoder.encode(userDTO.getPassword()))
                         .build();
         userRepository.save(user);
+    }
+
+    public Optional<User> findById(String userId) {
+        return userRepository.findById(new ObjectId(userId));
+    }
+
+    public void deleteById(String userId) {
+        userRepository.deleteById(new ObjectId(userId));
     }
 }

@@ -31,6 +31,7 @@ public class ArticleService {
         articleToUpdate.setText(article.getText());
         articleToUpdate.setName(article.getName());
         articleToUpdate.setCategory(article.getCategory());
+        articleToUpdate.setImg_link(article.getImg_link());
         articleRepository.save(articleToUpdate);
     }
 
@@ -52,11 +53,20 @@ public class ArticleService {
         return articleRepository.findByAuthorId(userId);
     }
 
-    public List<Article> fetchFourRelatedArticles(List<String> categories) {
+    public List<Article> fetchFourRelatedArticles(List<String> categories, Article article) {
         return articleRepository.findByCategoryIn(categories)
-                                    .stream()
-                                    .sorted(Comparator.comparing(Article::getDate).reversed())
-                                    .limit(4)
-                                    .collect(Collectors.toList());
+                                .stream()
+                                .filter(obj -> !obj.getArticleId().equals(article.getArticleId()))
+                                .sorted(Comparator.comparing(Article::getDate).reversed())
+                                .limit(4)
+                                .collect(Collectors.toList());
+    }
+
+    public boolean existsById(String articleId) {
+        return articleRepository.existsById(new ObjectId(articleId));
+    }
+
+    public void deleteById(String articleId) {
+        articleRepository.deleteById(new ObjectId(articleId));
     }
 }

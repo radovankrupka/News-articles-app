@@ -20,11 +20,11 @@
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
     <div class="container-fluid">
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
-            <a class="navbar-brand mt-2 mt-lg-0" href="#">
+            <a class="navbar-brand mt-2 mt-lg-0" href="/">
                 <img
-                        src="https://mdbcdn.b-cdn.net/img/logo/mdb-transaprent-noshadows.webp"
+                        src="/res/img/icon.png"
                         height="15"
-                        alt="MDB Logo"
+                        alt="RK Logo"
                         loading="lazy"
                 />
             </a>
@@ -37,6 +37,18 @@
                         <a class="nav-link btn btn-outline-primary" href="/article/new">Add article</a>
                     </li>
                 </sec:authorize>
+                <sec:authorize access="hasRole('ADMIN')">
+                    <div class="btn-group">
+                         <a href="/admin" class="btn btn-outline-danger">Admin panel</a>
+                        <div class="btn-group">
+                            <button type="button" class="btn btn-outline-danger dropdown-toggle" data-bs-toggle="dropdown"></button>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" href="/admin?page=1&display=articles">Articles</a></li>
+                                <li><a class="dropdown-item" href="/admin?page=1&display=users">Users</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </sec:authorize>
             </ul>
         </div>
         <sec:authorize access="isAuthenticated()">
@@ -46,16 +58,16 @@
                     <div class="dropstart">
                         <div id="dropstartMenuButton dropdown-toggle" aria-expanded="false" data-bs-toggle="dropdown">
                             <img
-                                    src="<core:url value="/res/png/6086462.png"/>"
+                                    src="<core:url value="/res/img/6086462.png"/>"
                                     class="rounded-circle "
                                     height="25"
                                     loading="lazy"
                             />
                             <img
-                                    src="https://mdbcdn.b-cdn.net/img/new/avatars/2.webp"
+                                    src="${currentUser.img_link}"
                                     class="rounded-circle"
                                     height="45"
-                                    alt="Black and White Portrait of a Man"
+                                    alt="profile photo"
                                     loading="lazy"
 
                             />
@@ -64,7 +76,7 @@
                         <ul class="dropdown-menu" aria-labelledby="dropstartMenuButton" >
                             <li><h6 class="dropdown-header">User actions</h6></li>
 
-                            <li><a class="dropdown-item" href="/user">My profile</a></li>
+                            <li><a class="dropdown-item" href="/user/${currentUser.userId}">My profile</a></li>
                             <li><hr class="dropdown-divider"></li>
                             <li><a class="dropdown-item" href="/logout">Logout</a></li>
                         </ul>
@@ -93,10 +105,11 @@
         <div class="row">
             <c:forEach items="${articles}" var="article">
                 <div class="col-sm-12 col-md-6 col-xl-4 txt-color">
-                    <div class="card mb-3 rounded-3 position-relative" style="height: 450px;">
-                        <div class="d-flex justify-content-center align-items-center img-div" style="position: relative;">
-                                <%--TODO: pre kazdy article pridat link k relevantnemu obrazku--%>
-                            <img class="img-content" src="https://i.ibb.co/Y7ZNfbJ/placeholder.png" alt="Card image cap" >
+                    <div class="card mb-3 rounded-3 position-relative" style="height: 500px;">
+                        <div class="d-flex justify-content-center align-items-center img-div mt-3" style="position: relative;">
+                            <img class="img-content img-fluid"
+                                 src="${article.img_link}" alt="Card image cap"
+                                 style="max-width: 300px; max-height: 230px;">
                             <a href="/article/${article.articleId}" class="stretched-link"></a>
                         </div>
                         <div class="card-body txt-color p-4 ">
@@ -110,7 +123,7 @@
                             <a href="/article/${article.articleId}" class="stretched-link"></a>
                             </div>
                             <sec:authorize access="isAuthenticated()">
-                                <c:if test="${currentUser != null && currentUser.userId == article.author_id}">
+                                <c:if test="${currentUser != null && currentUser.userId == article.author_id }">
                                     <div>
                                         <a class="card-link link-warning" style="position: relative;" href="/article/edit/${article.articleId}">Edit</a>
                                         <a class="card-link link-danger" style="position: relative;" href="/article/delete/${article.articleId}"
@@ -149,10 +162,6 @@
         </div>
     </div>
 </div>
-
-<%--
-TODO: ?? pridaj grafy so statistikami (kolacovy graf - pocet clankov podla kategorie)
---%>
 
 <script src="<core:url value="/res/js/bootstrap.bundle.min.js" />"></script>
 <script>
