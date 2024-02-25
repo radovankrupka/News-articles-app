@@ -5,16 +5,17 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.ViewResolverRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
 
 @Configuration
 @EnableWebMvc
-public class WebConfig implements WebMvcConfigurer {
+public class WebConfig extends WebMvcConfigurerAdapter {
 
     @Override
     public void configureViewResolvers(ViewResolverRegistry registry) {
         InternalResourceViewResolver resolver = new InternalResourceViewResolver();
-        resolver.setPrefix("/WEB-INF/views/");
+        resolver.setPrefix("/views/");
         resolver.setSuffix(".jsp");
         registry.viewResolver(resolver);
     }
@@ -22,6 +23,7 @@ public class WebConfig implements WebMvcConfigurer {
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry){
         registry.addResourceHandler("/res/**").addResourceLocations("classpath:/static/");
+        registry.addResourceHandler("/views/**").addResourceLocations("classpath:/views/");
     }
 
 }

@@ -6,11 +6,11 @@
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
 		<version>2.4.3</version>
-		<relativePath/> <!-- lookup parent from repository -->
+		<relativePath/>
 	</parent>
 	<groupId>dt.final</groupId>
 	<artifactId>crudapp</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>1.0.0</version>
 	<name>crudapp</name>
 	<description>CRUD app with MongoDB database</description>
 	<properties>
@@ -65,6 +65,11 @@
 	</dependencies>
 
 	<build>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+            </resource>
+        </resources>
 		<plugins>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
