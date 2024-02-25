@@ -12,7 +12,7 @@
 	<artifactId>news-app</artifactId>
 	<version>1.0.0</version>
 	<name>crudapp</name>
-    <packaging>war</packaging>
+    <packaging>jar</packaging>
 	<description>CRUD app with MongoDB database</description>
 	<properties>
 		<java.version>8</java.version>
@@ -68,23 +68,14 @@
 	<build>
         <finalName>newsapp</finalName>
 		<plugins>
-            <plugin>
-                <artifactId>maven-war-plugin</artifactId>
-                <configuration>
-                    <attachClasses>true</attachClasses>
-                    <webResources>
-                        <resource>
-                            <directory>src/main/webapp</directory>
-                            <filtering>true</filtering>
-                        </resource>
-                    </webResources>
-                </configuration>
-            </plugin>
 
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 				<configuration>
+                    <layers>
+                        <enabled>true</enabled>
+                    </layers>
 					<excludes>
 						<exclude>
 							<groupId>org.projectlombok</groupId>
