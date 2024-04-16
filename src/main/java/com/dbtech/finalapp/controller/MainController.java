@@ -36,6 +36,11 @@ public class MainController {
         if ( error != null && error.isEmpty()){
             model.addAttribute("error", "Invalid credentials!");
         }
+        try {
+            Thread.sleep(250);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
         return "login";
     }
 
